@@ -1,21 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
+import { ApolloClient, ApolloProvider, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import AppTest from './app/components/AppTest';
+
+// Initialize ApolloClient
+const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
+  cache: new InMemoryCache(),
+  uri: 'http://localhost:4000/',
+})
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ApolloProvider client={client}>
+      <AppTest />
+    </ApolloProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
