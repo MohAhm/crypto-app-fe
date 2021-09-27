@@ -1,6 +1,10 @@
-import { ApolloClient, ApolloProvider, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import 'react-native-gesture-handler';
 import React from 'react';
-import AppTest from './app/components/AppTest';
+import { ApolloClient, ApolloProvider, InMemoryCache, NormalizedCacheObject } from '@apollo/client';
+import { NavigationContainer } from '@react-navigation/native';
+
+import navigationTheme from './app/navigation/navigationTheme';
+import AppNavigator from './app/navigation/AppNavigator';
 
 // Initialize ApolloClient
 const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
@@ -11,7 +15,9 @@ const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
 export default function App() {
   return (
     <ApolloProvider client={client}>
-      <AppTest />
+      <NavigationContainer theme={navigationTheme}>
+        <AppNavigator />
+      </NavigationContainer>
     </ApolloProvider>
   );
 }
