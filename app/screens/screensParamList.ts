@@ -4,6 +4,6 @@ export type TMainBottomTabParamList = {
 }
 
 export type TRootStackParamList = {
-  Coins: undefined
-  CoinsDetails: undefined
+  Exchanges: undefined
+  Details: { exchange_id: string }
 }

@@ -1,39 +1,39 @@
 import React from 'react'
 import { StyleSheet, View, Image, TouchableHighlight } from 'react-native'
 import colors from '../config/colors'
-import { IAssetData } from '../lib/models'
+import { IExchangeData } from '../lib/models'
 import { AppText } from './AppText'
 import { FontAwesome5 } from '@expo/vector-icons'
 import formatMony from '../lib/formatMony'
 
-interface IListItemProps extends IAssetData {
+interface IListItemProps extends IExchangeData {
   handlePress?: () => void
 }
 
 export const ListItem: React.FC<IListItemProps> = ({ 
-  asset_id, 
   name, 
   url, 
-  price_usd,
+  volume_1day_usd,
+  handlePress
 }) => {
   return (
     <TouchableHighlight
       underlayColor={colors.light}
-      onPress={() => console.log("Test click...")}
+      onPress={handlePress}
     >
       <View style={styles.container}>
         {url && <Image style={styles.image} source={{ uri: url }}/>}
 
         <View style={styles.detailsContainer}>
-          <AppText style={styles.primaryText}>{name}</AppText>
-          <AppText style={styles.secondaryText}>{asset_id}</AppText>
+          <AppText style={styles.title}>{name}</AppText>
         </View>
 
         <View style={styles.monyContainer}>
-          <AppText style={styles.primaryText}>{price_usd ? formatMony(price_usd) : '--'}</AppText>
+          <AppText style={styles.subTitle}>Volume(24h)</AppText>
+          <AppText style={styles.title}>{formatMony(volume_1day_usd)}</AppText>
         </View>
 
-        <FontAwesome5 name="chevron-right" size={18} color={colors.gray} />
+        <FontAwesome5 name="chevron-right" size={12} color={colors.gray} />
       </View>
     </TouchableHighlight>
   )
@@ -63,11 +63,23 @@ const styles = StyleSheet.create({
     height: 48,
   },
 
-  primaryText: {
+  title: {
     fontWeight: '500',
   },
 
-  secondaryText: {
+  subTitle: {
+    fontSize: 14,
     color: colors.gray,
   }
 })
+
+const areEqual = (prevProps: IListItemProps, nextProps: IListItemProps) => {
+  const { exchange_id } = nextProps;
+  const { exchange_id: prevIsSelected } = prevProps;
+
+  const isSelectedEqual = exchange_id === prevIsSelected;
+
+  return isSelectedEqual;
+};
+
+export default React.memo(ListItem, areEqual)

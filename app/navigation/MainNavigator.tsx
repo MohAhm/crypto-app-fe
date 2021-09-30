@@ -10,12 +10,12 @@ const Stack = createNativeStackNavigator<TRootStackParamList>()
 const MainNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen 
-      name='Coins' 
+      name='Exchanges' 
       component={MarketsScreen} 
       options={{ headerShown: false }}
     />
     <Stack.Screen 
-      name='CoinsDetails' 
+      name='Details' 
       component={DetailsScreen} 
       options={{
         title: 'Details',

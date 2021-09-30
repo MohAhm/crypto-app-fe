@@ -1,24 +1,23 @@
-export interface IAsset {
-  asset_id: string
+export interface IExchange {
+  exchange_id: string
   name: string
-  type_is_crypto?: boolean
-  volume_1hrs_usd?: number
-  price_usd: number | null
+  website?: string
+  volume_1day_usd: number
 }
 
-export interface IAssetIcon {
-  asset_id: string
+export interface IExchangeIcon {
+  exchange_id: string
   url: string
 }
 
-export interface IAssets { 
-  assets: IAsset[]
+export interface IExchanges { 
+  exchanges: IExchange[]
 }
 
-export interface IAssetIcons {
-  assetIcons: IAssetIcon[]
+export interface IExchangeIcons {
+  exchangeIcons: IExchangeIcon[]
 }
 
-export interface IAssetData extends IAsset {
+export interface IExchangeData extends IExchange {
   url?: string
 }

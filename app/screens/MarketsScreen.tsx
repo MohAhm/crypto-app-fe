@@ -1,87 +1,100 @@
-import React, { useMemo } from 'react'
-import { Button, StyleSheet, Text } from 'react-native'
+import React, { useMemo, useCallback } from 'react'
+import { StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/core'
-import { StackNavigationProp } from '@react-navigation/stack'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 import { Screen } from '../components/Screen'
 import { TRootStackParamList } from './screensParamList'
 import gql from 'graphql-tag'
 import { useQuery } from '@apollo/client'
 import { FlatList } from 'react-native-gesture-handler'
-import { IAssetIcons, IAssets } from '../lib/models'
+import { IExchanges, IExchangeIcons } from '../lib/models'
 import { ListItem } from '../components/ListItem'
 import { ListItemSeparator } from '../components/ListItemSeparator'
 import { AppText } from '../components/AppText'
 
-// type TDetailsScreenProp = StackNavigationProp<TRootStackParamList, 'CoinsDetails'>
+type TDetailsScreenNavigationProp = NativeStackNavigationProp<TRootStackParamList, 'Details'>
 
-const ASSETS = gql`
+const EXCHANGES = gql`
   query {
-    assets {
-      asset_id
+    exchanges {
+      exchange_id
       name
-      type_is_crypto
-      volume_1hrs_usd
-      price_usd
+      volume_1day_usd
     }
   }
 `
 
-const ASSET_ICONS = gql`
+const EXCHANGE_ICONS = gql`
   query {
-    assetIcons {
-      asset_id
+    exchangeIcons {
+      exchange_id
       url
     }
   }
 `
-
+ 
 interface IMarketsScreenProps {}
 
 export const MarketsScreen: React.FC<IMarketsScreenProps> = () => {
-  // const navigation = useNavigation<TDetailsScreenProp>()
+  const navigation = useNavigation<TDetailsScreenNavigationProp>()
   const { 
-    loading: assetsLoading, 
-    error: assetsError, 
-    data: assetsData 
-  } = useQuery<IAssets>(ASSETS)
+    loading: exchangesLoading, 
+    error: exchangesError, 
+    data: exchangesData 
+  } = useQuery<IExchanges>(EXCHANGES)
   const { 
-    loading: assetIconsLoading, 
-    error: assetIconsError, 
-    data: assetIconsData 
-  } = useQuery<IAssetIcons>(ASSET_ICONS)
+    loading: exchangeIconsLoading, 
+    error: exchangeIconsError, 
+    data: exchangeIconsData 
+  } = useQuery<IExchangeIcons>(EXCHANGE_ICONS)
 
-  // const data = assetIconsData?.assetIcons.map((icons) => {
-  //   const assets = assetsData?.assets.find((assets) => assets.asset_id === icons.asset_id)
-  //   return { ...icons, ...assets }
+  // const data = exchangeIconsData?.exchangeIcons.map((icons) => {
+  //   const exchanges = exchangesData?.exchanges.find((exchanges) => exchanges.exchange_id === icons.exchange_id)
+  //   return { ...icons, ...exchanges }
   // })
-  //   .filter(x => x.price_usd !== null && x.type_is_crypto)
-  //   .sort((a, b) => Number(b.price_usd ) - Number(a.price_usd))
+  //   .filter(x => x.volume_1day_usd !== null && x.type_is_crypto)
+  //   .sort((a, b) => Number(b.volume_1day_usd ) - Number(a.volume_1day_usd))
   
   const data = useMemo(() => 
-    assetIconsData?.assetIcons.map((icons) => {
-      const assets = assetsData?.assets.find((assets) => assets.asset_id === icons.asset_id)
-      return { ...icons, ...assets }
+    exchangesData?.exchanges.map((exchanges) => {
+      const icons = exchangeIconsData?.exchangeIcons.find((icons) => exchanges.exchange_id === icons.exchange_id)
+      return { ...icons, ...exchanges }
     })
-      .filter(x => x.price_usd !== null && x.type_is_crypto)
-      .sort((a, b) => Number(b.price_usd ) - Number(a.price_usd)), 
-    [assetsData, assetIconsData]
+      .filter(x => x.volume_1day_usd > 0), 
+    [exchangeIconsData, exchangesData]
   )
-  // console.log(data) 
-  // console.log(data?.length)
+  // console.log(data)
+  // console.log('Exchanges', exchangeIconsData?.exchangeIcons.length)
+  // console.log('Icons', exchangesData?.exchanges.length)
     
-  if (assetsLoading || assetIconsLoading) {
+  const renderItem = useCallback(
+    ({ item }) => (
+      <ListItem 
+        exchange_id={item.exchange_id}
+        name={item.name}
+        url={item.url}
+        volume_1day_usd={item.volume_1day_usd}
+        handlePress={() => navigation.navigate('Details', item.exchange_id)}
+      />
+    ),
+    []
+  )
+
+  const keyExtractor = useCallback((exchange) => exchange.exchange_id, [])
+
+  if (exchangesLoading || exchangeIconsLoading) {
     return (
-      <Screen>
+      <Screen style={styles.screen}>
         <AppText>Loading...</AppText>
-      </Screen>
+      </Screen> 
     )
   }
 
-  if (assetsError || assetIconsError) {
+  if (exchangesError || exchangeIconsError) {
     return (
-      <Screen>
-        <AppText>Error: {assetsError?.message || assetIconsError?.message}</AppText>
+      <Screen style={styles.screen}>
+        <AppText>Error: {exchangesError?.message ||exchangeIconsError?.message}</AppText>
       </Screen>
     )
   }
@@ -90,18 +103,10 @@ export const MarketsScreen: React.FC<IMarketsScreenProps> = () => {
     <Screen style={styles.screen}>
       <FlatList 
         data={data}
-        keyExtractor={asset => asset.asset_id}
+        keyExtractor={keyExtractor}
         ItemSeparatorComponent={ListItemSeparator}
-        renderItem={({ item }) => (
-          <ListItem 
-            asset_id={item.asset_id}
-            name={item.name}
-            url={item.url}
-            price_usd={item.price_usd}
-          />
-        )}
+        renderItem={renderItem} 
       />
-      {/* <Button title="Details" onPress={() => navigation.navigate('CoinsDetails')} /> */}
     </Screen>
   )
 }
