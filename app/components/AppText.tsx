@@ -5,6 +5,7 @@ import defaultStyles from '../config/styles'
 
 interface IAppTextProps {
   style?: StyleProp<TextStyle>
+  [x: string]: any;
 }
 
 export const AppText: React.FC<IAppTextProps> = ({ children, style, ...otherProps }) => {

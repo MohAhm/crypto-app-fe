@@ -1,13 +1,7 @@
 import React from 'react'
-import { Text } from 'react-native'
-import { Screen } from '../components/Screen'
 
-interface ISearchScreenProps {}
+import { ExchangesList } from '../components/ExchangesList'
 
-export const SearchScreen: React.FC<ISearchScreenProps> = () => {
-  return (
-    <Screen>
-      <Text>Search</Text>
-    </Screen>
-  )
+export const SearchScreen: React.FC = () => {
+  return <ExchangesList isSearchScreen />
 }

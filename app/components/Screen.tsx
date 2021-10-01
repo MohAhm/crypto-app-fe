@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, SafeAreaView, StyleProp, ViewStyle } from 'react-native'
+import { StatusBar, View, StyleSheet, SafeAreaView, StyleProp, ViewStyle } from 'react-native'
 import Constants from 'expo-constants'
 
 interface IScreen {
@@ -9,6 +9,7 @@ interface IScreen {
 export const Screen: React.FC<IScreen> = ({ children, style }) => {
   return (
     <SafeAreaView style={[styles.screen, style]}>
+      <StatusBar barStyle='dark-content' />
       <View style={[styles.view, style]}>
         {children}
       </View>
