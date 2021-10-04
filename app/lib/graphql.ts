@@ -38,11 +38,11 @@ export const SYMBOL = gql`
   }
 `
 
-export const HISTORICAL_DATA = gql`
-  query HISTORICAL_DATA($symbol_id: ID!) {
-    historicalData(symbol_id: $symbol_id) {
-      time_period_start
-      price_open
+export const LATEST_DATA = gql`
+  query Query($symbol_id: ID!, $period_id: String!, $limit: Int!) {
+    latestData(symbol_id: $symbol_id, period_id: $period_id, limit: $limit) {
+      price_close
+      time_close
     }
   }
 `

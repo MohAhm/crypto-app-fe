@@ -5,8 +5,7 @@ export default function formatMony(amount: number = 0) {
       currency: 'USD',
       minimumFractionDigits: 2,
   }
-
-  // check if its a clean dollar amount
+  
   if (amount % 100 === 0) {
       options.minimumFractionDigits = 0
   }
